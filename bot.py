@@ -85,7 +85,6 @@ def status_update_pulsepoint(incidentid, calltype, units):
 
 
 def loop_update_pulsepoint(agencyid):
-    print "local INCIDENTS: %s" % incidents
     unit_types = [
         ('DP', 'DISP'),
         ('AK', 'ACK'),
@@ -97,11 +96,11 @@ def loop_update_pulsepoint(agencyid):
         ('AR', 'AVAIL'),
         ('AE', 'AVAIL-OS')
         ]
-    print('loop_update_pulsepoint')
     threading.Timer(PP_API_SLEEP, loop_update_pulsepoint, args=[agencyid]).start()
     json = grab_pulsepoint(agencyid)
     if json == "" or json['incidents'] is None: return
     for incident in json['incidents']:
+        print "local INCIDENTS: %s" % incidents
         #print incident
         units = []
         if not 'Unit' in incident: return

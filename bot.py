@@ -132,6 +132,7 @@ def loop_update_pulsepoint(agencyid):
             status_update_pulsepoint(incident['ID'], calltype, units)
 
 
+print('Starting PulsePoint-Twitter-Bot')
 for agencyid in agencyids:
     loop_update_pulsepoint(agencyid)
     check_if_cleared(agencyid)

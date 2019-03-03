@@ -13,9 +13,8 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 agencyids = ["57035"]
 TWEET_SLEEP_TIME = 10
-PP_API_SLEEP = 5
+PP_API_SLEEP = 30
 MINUTES_REMOVE = 5
-currtime = datetime.now()
 incidents = []
 
 
@@ -45,6 +44,7 @@ def get_print_units(units):
     if text.endswith(", "):
         text = text[:-2]
     return text
+
 
 def check_if_cleared(agencyid):
     threading.Timer(MINUTES_REMOVE * 60, check_if_cleared, args=[agencyid]).start()
@@ -85,6 +85,7 @@ def status_update_pulsepoint(incidentid, calltype, units):
 
 
 def loop_update_pulsepoint(agencyid):
+    threading.Timer(PP_API_SLEEP, loop_update_pulsepoint, args=[agencyid]).start()
     unit_types = [
         ('DP', 'DISP'),
         ('AK', 'ACK'),
@@ -95,20 +96,18 @@ def loop_update_pulsepoint(agencyid):
         ('AQ', 'AVAIL'),
         ('AR', 'AVAIL'),
         ('AE', 'AVAIL-OS')
-        ]
-    threading.Timer(PP_API_SLEEP, loop_update_pulsepoint, args=[agencyid]).start()
+    ]
     json = grab_pulsepoint(agencyid)
-    if json == "" or json['incidents'] is None: return
+    if json == "" or json['incidents'] is None:
+        return
     for incident in json['incidents']:
         print "local INCIDENTS: %s" % incidents
-        #print incident
         units = []
-        if not 'Unit' in incident: return
+        if 'Unit' not in incident:
+            return
         for unit in incident['Unit']:
             units.append([unit['UnitID'], next(
                 fullstatus for (name, fullstatus) in unit_types if name == unit['PulsePointDispatchStatus'])])
-        #calltype = next(
-        #    fullname for (name, fullname) in call_types if name == incident['PulsePointIncidentCallType'])
         calltype = incident['AgencyIncidentCallTypeDescription']
         if not any(incident['ID'] in incident[0] for incident[0] in incidents):
             print "if not any incidents: %s" % incidents
@@ -117,7 +116,6 @@ def loop_update_pulsepoint(agencyid):
                 dt_obj = datetime.strptime(incident['CallReceivedDateTime'][:-1], "%Y-%m-%dT%H:%M:%S")
                 dt = dt_obj.replace(tzinfo=timezone("UTC")).astimezone(timezone("US/Pacific")).strftime(
                     "%m/%d/%y @ %H:%M:%S %Z")
-                print dt
                 call = "New Incident: " + calltype + "\nD/T: " + dt + "\nUNITS: " + get_print_units(
                     units) + "\nADDR: " + address
                 print call

@@ -36,20 +36,19 @@ def grab_pulsepoint(agencyid):
         except:
             continue
 
-
 def get_print_units(units):
-    text = ""
+    unitlist = []
     for unit in units:
-        text += unit[0] + " [" + unit[1] + "], "
-    if text.endswith(", "):
-        text = text[:-2]
+        unitlist.append(unit[0] + " [" + unit[1] + "]")
+    text = ', '.join(unitlist)
     return text
 
 
 def check_if_cleared(agencyid):
     threading.Timer(MINUTES_REMOVE * 60, check_if_cleared, args=[agencyid]).start()
     json = grab_pulsepoint(agencyid)
-    if json == "" or json['incidents'] is None: return
+    if json == "" or json['incidents'] is None:
+        return
     for incident in incidents:
         if not any(incidentid["ID"] in incident[0] for incidentid in json['incidents']):
             incidents.remove(incident)

@@ -116,13 +116,13 @@ def loop_update_pulsepoint(agencyid):
                 call = "New Incident: " + calltype + "\nD/T: " + dt + "\nUNITS: " + get_print_units(
                     units) + "\nADDR: " + address
                 print call
-                print "!!!!!!Tweet is next!!!!!"
+                print "DEBUG: Tweet is next"
                 tweet = api.update_status(call)
                 time.sleep(TWEET_SLEEP_TIME)
                 incidents.append([incident['ID'], calltype, units, tweet.id_str,
                                   dt_obj.replace(tzinfo=timezone("UTC")).astimezone(timezone("US/Pacific")).replace(
                                       tzinfo=None)])
-                print "Incident appended"
+                print "incidents appended"
             except:
                 pass
         else:

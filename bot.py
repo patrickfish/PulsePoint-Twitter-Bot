@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-from datetime import datetime
-from pytz import timezone
-from credentials import *
 import threading
 import time
+from datetime import datetime
+
 import requests
-from requests.auth import HTTPBasicAuth
 import tweepy
+from credentials import *
+from pytz import timezone
+from requests.auth import HTTPBasicAuth
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -35,6 +36,7 @@ def grab_pulsepoint(agencyid):
             return pp_json
         except:
             continue
+
 
 def get_print_units(units):
     unitlist = []

@@ -62,23 +62,21 @@ def status_update_pulsepoint(incidentid, calltype, units):
         if incident[0] == incidentid:
             if units != incident[2]:
                 try:
-                    print "Updating units"
                     incident[2] = units
                     text = "Units Updated:\n" + get_print_units(units)
                     time.sleep(TWEET_SLEEP_TIME)
-                    tweet = api.update_status(text, in_reply_to_status_id=incident[3])
                     print text
+                    tweet = api.update_status(text, in_reply_to_status_id=incident[3])
                     incident[3] = tweet.id_str
                 except Exception as e:
                     print e
             if calltype != incident[1]:
                 try:
-                    print "Updating call type"
                     incident[1] = calltype
                     text = "Call Updated to:\n" + calltype
                     time.sleep(TWEET_SLEEP_TIME)
-                    tweet = api.update_status(text, in_reply_to_status_id=incident[3])
                     print text
+                    tweet = api.update_status(text, in_reply_to_status_id=incident[3])
                     incident[3] = tweet.id_str
                 except Exception as e:
                     print e
@@ -90,7 +88,7 @@ def loop_update_pulsepoint(agencyid):
         ('DP', 'DISP'),
         ('AK', 'ACK'),
         ('ER', 'ENRT'),
-        ('OS', 'ONSC'),
+        ('OS', 'ONSCN'),
         ('TR', 'TRNSPT'),
         ('TA', 'TRANSPT-A'),
         ('AQ', 'AVAIL'),
@@ -110,7 +108,7 @@ def loop_update_pulsepoint(agencyid):
                 fullstatus for (name, fullstatus) in unit_types if name == unit['PulsePointDispatchStatus'])])
         calltype = incident['AgencyIncidentCallTypeDescription']
         if not any(incident['ID'] in incident[0] for incident[0] in incidents):
-            print "if not any incidents: %s" % incidents
+            print "if not any %s in incidents: %s " % (incident['ID'], incidents)
             try:
                 address = incident['MedicalEmergencyDisplayAddress']
                 dt_obj = datetime.strptime(incident['CallReceivedDateTime'][:-1], "%Y-%m-%dT%H:%M:%S")

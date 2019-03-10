@@ -5,17 +5,13 @@ from datetime import datetime
 
 import requests
 import tweepy
-from credentials import *
+from config import *
 from pytz import timezone
 from requests.auth import HTTPBasicAuth
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
-agencyids = ["57035"]
-TWEET_SLEEP_TIME = 10
-PP_API_SLEEP = 30
-MINUTES_REMOVE = 5
 incidents = []
 
 

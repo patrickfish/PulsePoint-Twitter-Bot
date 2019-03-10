@@ -53,13 +53,14 @@ def check_if_cleared(agencyid):
         return
     for incident in incidents:
         if not any(incidentid["ID"] in incident[0] for incidentid in json['incidents']):
+            print "Removing incident: %s" % incident
             incidents.remove(incident)
+
 
 
 def status_update_pulsepoint(incidentid, calltype, units):
     print('status_update_pulsepoint()')
     for incident in incidents:
-        print "Printing incident: %s" % incident
         if incident[0] == incidentid:
             if units != incident[2]:
                 try:
@@ -100,7 +101,6 @@ def loop_update_pulsepoint(agencyid):
     if json == "" or json['incidents'] is None:
         return
     for incident in json['incidents']:
-        print "local INCIDENTS: %s" % incidents
         units = []
         if 'Unit' not in incident:
             return

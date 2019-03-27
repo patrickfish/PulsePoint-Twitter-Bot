@@ -1,8 +1,13 @@
 # PulsePoint Twitter bot settings
 agencyids = ["57035"]
+TWEET_PREPEND = "Station 30 has been dispatched to"
 TWEET_SLEEP_TIME = 10
 PP_API_SLEEP = 30
 MINUTES_REMOVE = 5
+ignoreUnits = [
+        'UNIT1',
+        'UNIT2',
+        ]
 
 # Twitter credentials
 consumer_key = ''

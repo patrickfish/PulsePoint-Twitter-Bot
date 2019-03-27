@@ -101,8 +101,9 @@ def loop_update_pulsepoint(agencyid):
         if 'Unit' not in incident:
             return
         for unit in incident['Unit']:
-            units.append([unit['UnitID'], next(
-                fullstatus for (name, fullstatus) in unit_types if name == unit['PulsePointDispatchStatus'])])
+            if unit['UnitID'] not in ignoreUnits:
+                units.append([unit['UnitID'], next(
+                    fullstatus for (name, fullstatus) in unit_types if name == unit['PulsePointDispatchStatus'])])
         calltype = incident['AgencyIncidentCallTypeDescription']
         if not any(incident['ID'] in incident[0] for incident[0] in incidents):
             print "if not any %s in incidents: %s " % (incident['ID'], incidents)
@@ -110,11 +111,10 @@ def loop_update_pulsepoint(agencyid):
                 address = incident['MedicalEmergencyDisplayAddress']
                 dt_obj = datetime.strptime(incident['CallReceivedDateTime'][:-1], "%Y-%m-%dT%H:%M:%S")
                 dt = dt_obj.replace(tzinfo=timezone("UTC")).astimezone(timezone("US/Pacific")).strftime(
-                    "%m/%d/%y @ %H:%M:%S %Z")
-                call = "New Incident: " + calltype + "\nD/T: " + dt + "\nUNITS: " + get_print_units(
-                    units) + "\nADDR: " + address
+                    "%m/%d/%y @ %H:%M")
+                call = TWEET_PREPEND + " " + calltype + " at " + address + "\nUNITS: " + get_print_units(
+                    units) + "\n" + dt
                 print call
-                print "DEBUG: Tweet is next"
                 tweet = api.update_status(call)
                 time.sleep(TWEET_SLEEP_TIME)
                 incidents.append([incident['ID'], calltype, units, tweet.id_str,

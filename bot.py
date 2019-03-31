@@ -37,7 +37,8 @@ def grab_pulsepoint(agencyid):
 def get_print_units(units):
     unitlist = []
     for unit in units:
-        unitlist.append(unit[0] + " [" + unit[1] + "]")
+        if unit[1] != 'AVAIL':
+            unitlist.append(unit[0] + " [" + unit[1] + "]")
     text = ', '.join(unitlist)
     return text
 
@@ -71,7 +72,7 @@ def status_update_pulsepoint(incidentid, calltype, units):
             if calltype != incident[1]:
                 try:
                     incident[1] = calltype
-                    text = "Call Updated to:\n" + calltype
+                    text = "Incident Type Updated to: " + calltype
                     time.sleep(TWEET_SLEEP_TIME)
                     print text
                     tweet = api.update_status(text, in_reply_to_status_id=incident[3])
@@ -84,7 +85,7 @@ def loop_update_pulsepoint(agencyid):
     threading.Timer(PP_API_SLEEP, loop_update_pulsepoint, args=[agencyid]).start()
     unit_types = [
         ('DP', 'DISP'),
-        ('AK', 'ACK'),
+        ('AK', 'ONSCN'),  # If a unit goes OS-2ND (such as the unit assuming IC, or staged), PP sees this as AK.
         ('ER', 'ENRT'),
         ('OS', 'ONSCN'),
         ('TR', 'TRNSPT'),
